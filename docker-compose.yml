@@ -6,5 +6,5 @@ services:
 
     container_name: misell
 
-    mem_limit: 256m
-    cpus: 0.25
+    mem_limit: 512m
+    cpus: 0.5
