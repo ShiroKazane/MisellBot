@@ -1,5 +1,5 @@
 {
-  "name": "discord",
+  "name": "misellbot",
   "module": "index.ts",
   "type": "module",
   "private": true,

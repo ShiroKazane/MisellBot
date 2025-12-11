@@ -1,4 +1,4 @@
-# discord
+# MisellBot
 
 To install dependencies:
 
