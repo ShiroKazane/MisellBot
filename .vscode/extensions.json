@@ -1,0 +1,9 @@
+{
+  "recommendations": [
+    "SENKEN.vscode-multi-line-uncomment",
+    "antfu.file-nesting",
+    "biomejs.biome",
+    "vivaxy.vscode-conventional-commits",
+    "wayou.vscode-todo-highlight"
+  ]
+}
