@@ -143,6 +143,7 @@ async function clean() {
     await Promise.all(
       files.map(async (f) => {
         const full = join(TEMP, f)
+        if (full.includes('.gitkeep')) return
         try {
           const info = await stat(full)
           if (now - info.mtimeMs > EXPIRE) {
