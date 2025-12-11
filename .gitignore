@@ -11,12 +11,15 @@ coverage
 *.lcov
 
 # logs
-logs
+logs/*
 _.log
 report.[0-9]_.[0-9]_.[0-9]_.[0-9]_.json
 
 # temp
-temp
+temp/*
+
+# keep empty folders
+!**/.gitkeep
 
 # dotenv environment variable files
 .env
