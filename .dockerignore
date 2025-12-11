@@ -1,0 +1,14 @@
+# dependencies (bun install)
+node_modules
+
+# logs
+logs
+
+# temp
+temp
+
+# scripts
+scripts
+
+# IDEs
+.vscode

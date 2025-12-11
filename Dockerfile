@@ -1,6 +1,4 @@
-# use the official Bun image
-# see all versions at https://hub.docker.com/r/oven/bun/tags
-FROM oven/bun:1 AS base
+FROM oven/bun:alpine AS base
 WORKDIR /app
 
 # Install all dependencies (including dev)
@@ -19,5 +17,12 @@ ENV NODE_ENV=production
 
 COPY --from=build /app ./
 
+# --- FIX: create logs directory and set permissions ---
+RUN mkdir -p /app/logs \
+    && mkdir -p /app/temp \
+    && chown -R bun:bun /app/logs \
+    && chown -R bun:bun /app/temp
+
 USER bun
+
 ENTRYPOINT ["bun", "run", "./src/misell.ts"]
