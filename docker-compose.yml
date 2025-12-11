@@ -1,0 +1,10 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+
+    container_name: misell
+
+    mem_limit: 256m
+    cpus: 0.25
