@@ -12,7 +12,7 @@ import {
 	type RESTPostAPIChatInputApplicationCommandsJSONBody,
 	Routes
 } from 'discord.js';
-import { glob } from 'node:fs/promises';
+import { glob, mkdir, readdir, stat, unlink } from 'node:fs/promises';
 import path, { join } from 'node:path';
 import type { BaseLogger } from 'pino';
 
@@ -127,6 +127,8 @@ class Misell extends Client {
 		} catch (e) {
 			this.logger.error('Failed to send startup log webhook');
 		}
+
+		clean()
 	}
 }
 
@@ -141,6 +143,34 @@ process.on('SIGINT', async (signal: string) => {
 
 	process.exit(0);
 });
+
+const TEMP = join(process.cwd(), 'logs')
+const EXPIRE = 7 * 24 * 60 * 60 * 1000
+
+async function ensureDir() {
+	await mkdir(TEMP, { recursive: true })
+}
+
+async function clean() {
+	try {
+		await ensureDir()
+		const files = await readdir(TEMP)
+		const now = Date.now()
+
+		await Promise.all(
+			files.map(async (f) => {
+				const full = join(TEMP, f)
+				if (full.includes('.gitkeep')) return
+				try {
+					const info = await stat(full)
+					if (now - info.mtimeMs > EXPIRE) {
+						await unlink(full).catch(() => {})
+					}
+				} catch {}
+			})
+		)
+	} catch {}
+}
 
 export { Misell };
 
