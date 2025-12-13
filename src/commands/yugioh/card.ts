@@ -116,11 +116,11 @@ class Card extends Command {
     if (isMonster) {
       // Level / Rank / Link
       if (isLink) {
-        stats.push(`**LINK**: ${raw.linkval}`)
+        stats.push(`**Link**: ${raw.linkval}`)
       } else if (isXyz) {
-        stats.push(`**RANK**: ${raw.rank}`)
+        stats.push(`**Rank**: ${raw.rank}`)
       } else if (raw.level != null) {
-        stats.push(`**LEVEL**: ${raw.level}`)
+        stats.push(`**Level**: ${raw.level}`)
       }
 
       // ATK
@@ -135,7 +135,7 @@ class Card extends Command {
 
       // Pendulum Scale
       if (isPendulum) {
-        stats.push(`**SCALE**: ${raw.scale}`)
+        stats.push(`**Scale**: ${raw.scale}`)
       }
     }
 
