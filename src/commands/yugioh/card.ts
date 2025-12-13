@@ -93,16 +93,51 @@ class Card extends Command {
         ? `${raw.desc.slice(0, 1021)}...`
         : raw.desc ?? t('no-description', interaction.locale)
 
-        // typeline formatting
+    // typeline formatting
     const typeLine = Array.isArray(raw.typeline)
       ? raw.typeline.join(' / ')
       : raw.type ?? t('unknown', interaction.locale)
 
-    // attribute/level/atk/def
-    const attribute = raw.attribute ?? raw.attr ?? t('unknown', interaction.locale)
-    const level = raw.level ?? raw.linkval ?? '-'
-    const atk = raw.atk === -1 ? '?' : raw.atk ?? '0'
-    const def = raw.def === -1 ? '?' : raw.def ?? (raw.linkval != null ? '—' : '0')
+    // card category helpers
+    const isMonster = typeof raw.atk === 'number'
+    const isLink = raw.linkval != null
+    const isXyz = raw.rank != null
+    const isPendulum = raw.scale != null
+
+    // attribute
+    const attribute =
+      isMonster
+        ? raw.attribute ?? t('unknown', interaction.locale)
+        : t('n/a', interaction.locale)
+
+    // stats
+    const stats: string[] = []
+
+    if (isMonster) {
+      // Level / Rank / Link
+      if (isLink) {
+        stats.push(`**LINK**: ${raw.linkval}`)
+      } else if (isXyz) {
+        stats.push(`**RANK**: ${raw.rank}`)
+      } else if (raw.level != null) {
+        stats.push(`**LEVEL**: ${raw.level}`)
+      }
+
+      // ATK
+      if (raw.atk != null) {
+        stats.push(`**ATK**: ${raw.atk === -1 ? '?' : raw.atk}`)
+      }
+
+      // DEF (never for Link)
+      if (!isLink && raw.def != null) {
+        stats.push(`**DEF**: ${raw.def === -1 ? '?' : raw.def}`)
+      }
+
+      // Pendulum Scale
+      if (isPendulum) {
+        stats.push(`**SCALE**: ${raw.scale}`)
+      }
+    }
 
     // image
     let imagePath: string | null = null
@@ -118,8 +153,8 @@ class Card extends Command {
     // embed
     const embed = client.embed.createMessageEmbedWithThumbnail(
       `**Type**: ${typeLine}\n` +
-      `**Attribute**: ${attribute}\n` +
-      `**Level**: ${level}  **ATK**: ${atk}  **DEF**: ${def}`,
+      (isMonster ? `**Attribute**: ${attribute}\n` : '') +
+      (stats.length ? stats.join(' ') : ''),
       interaction,
       'attachment://card.jpg',
       EMBEDTYPE.GLOBAL,
