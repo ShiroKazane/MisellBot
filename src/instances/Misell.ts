@@ -4,6 +4,7 @@ import { DeferReply } from '@/middlewares';
 import { logger } from '@/utilities';
 import { pathToFileURL } from 'bun';
 import {
+	AttachmentBuilder,
 	Client,
 	type ClientOptions,
 	Collection,
@@ -12,7 +13,7 @@ import {
 	Routes
 } from 'discord.js';
 import { glob } from 'node:fs/promises';
-import path from 'node:path';
+import path, { join } from 'node:path';
 import type { BaseLogger } from 'pino';
 
 class Misell extends Client {
@@ -108,10 +109,38 @@ class Misell extends Client {
 		this.logger.info(`Loaded ${this.commands.size} commands`);
 	}
 
-	private async requestCardInfo() {
+	public async sendLog() {
+		const webhookURL = process.env.LOG_WEBHOOK_URL as `/${string}` | undefined;
+		if (!webhookURL) return;
 
+		const today = new Date();
+		const fileName = `combined-${today.getFullYear()}.${today.getMonth() + 1}.${today.getDate()}.log`
+		const attachment = new AttachmentBuilder(join(`${process.cwd()}/logs/${fileName}`), { name: fileName });
+
+		try {
+			const rest = new REST().setToken(BOT_TOKEN);
+			await rest.post(webhookURL, {
+				body: {
+					files: [attachment],
+				},
+			});
+		} catch (e) {
+			this.logger.error('Failed to send startup log webhook');
+		}
 	}
 }
+
+process.on('SIGINT', async (signal: string) => {
+	logger.info(`Received ${signal}, shutting down...`);
+
+	try {
+		await Misell.prototype.sendLog();
+	} catch (e) {
+		logger.error('Error sending log on shutdown');
+	}
+
+	process.exit(0);
+});
 
 export { Misell };
 
