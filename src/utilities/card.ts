@@ -51,7 +51,7 @@ async function load(): Promise<void> {
 
   // ---- Load EN ----
   try {
-    const { body } = await request('https://db.ygoprodeck.com/api/v7/cardinfo.php?misc=yes')
+    const { body } = await request('https://db.ygoprodeck.com/api/v7/cardinfo.php')
     const raw = jsonDecode(await body.json())
     if (raw && Array.isArray(raw.data)) enCards = raw.data
   } catch (err) {
@@ -60,7 +60,7 @@ async function load(): Promise<void> {
 
   // ---- Load JA ----
   try {
-    const { body } = await request('https://db.ygoprodeck.com/api/v7/cardinfo.php?misc=yes&language=ja')
+    const { body } = await request('https://db.ygoprodeck.com/api/v7/cardinfo.php?language=ja')
     const raw = jsonDecode(await body.json())
     if (raw && Array.isArray(raw.data)) jaCards = raw.data
   } catch (err) {
