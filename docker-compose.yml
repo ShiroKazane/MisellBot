@@ -8,7 +8,9 @@ services:
     mem_limit: 512m
     cpus: 0.5
     volumes:
-      - misell:/app/logs
+      - logs:/app/logs
+      - temp:/app/temp
 
 volumes:
-  misell:
+  logs:
+  temp:
