@@ -1,10 +1,14 @@
 services:
   app:
+    container_name: misell
     build:
       context: .
       dockerfile: Dockerfile
-
-    container_name: misell
-
+    restart: unless-stopped
     mem_limit: 512m
     cpus: 0.5
+    volumes:
+      - misell:/app/logs
+
+volumes:
+  misell:
